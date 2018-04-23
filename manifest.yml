@@ -1,0 +1,10 @@
+---
+applications:
+  - name: dummy-service-broker
+    host: dummy-service-broker
+    path: target/dummy-service-broker-0.0.1-SNAPSHOT.war
+    buildpack: sap_java_buildpack
+    disk_quota: 256M
+    memory: 256M
+    env:
+      TARGET_RUNTIME: tomcat

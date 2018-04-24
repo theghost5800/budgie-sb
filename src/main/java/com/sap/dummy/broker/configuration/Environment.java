@@ -1,4 +1,4 @@
-package com.sap.dummy.configuration;
+package com.sap.dummy.broker.configuration;
 
 public class Environment {
 

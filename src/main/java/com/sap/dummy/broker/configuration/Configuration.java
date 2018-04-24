@@ -1,9 +1,9 @@
-package com.sap.dummy.configuration;
+package com.sap.dummy.broker.configuration;
 
 import java.text.MessageFormat;
 
 import com.google.gson.Gson;
-import com.sap.dummy.domain.Catalog;
+import com.sap.dummy.broker.domain.Catalog;
 
 public class Configuration {
 

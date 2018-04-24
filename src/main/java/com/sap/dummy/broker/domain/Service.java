@@ -1,4 +1,4 @@
-package com.sap.dummy.domain;
+package com.sap.dummy.broker.domain;
 
 import java.util.List;
 import java.util.UUID;

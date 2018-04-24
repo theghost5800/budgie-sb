@@ -1,0 +1,39 @@
+package com.sap.dummy.configuration;
+
+import java.text.MessageFormat;
+
+import com.google.gson.Gson;
+import com.sap.dummy.domain.Catalog;
+
+public class Configuration {
+
+    private static final String CFG_CATALOG = "CATALOG";
+
+    private Gson gson = new Gson();
+    private Environment environment;
+    private Catalog catalog;
+
+    public Configuration() {
+        this(new Environment());
+    }
+    
+    public Configuration(Environment environment) {
+        this.environment = environment;
+    }
+
+    public Catalog getCatalog() {
+        if (catalog == null) {
+            catalog = getCatalogFromEnvironment();
+        }
+        return catalog;
+    }
+
+    private Catalog getCatalogFromEnvironment() {
+        String catalogJson = environment.getVariable(CFG_CATALOG);
+        if (catalogJson == null) {
+            throw new IllegalStateException(MessageFormat.format("{0} environment variable is not set.", CFG_CATALOG));
+        }
+        return gson.fromJson(catalogJson, Catalog.class);
+    }
+
+}

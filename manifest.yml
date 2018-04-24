@@ -8,3 +8,46 @@ applications:
     memory: 256M
     env:
       TARGET_RUNTIME: tomcat
+      CATALOG: >
+        {
+          "services": [
+            {
+              "id": "acbd18db-4cc2-385c-adef-654fccc4a4d8",
+              "name": "foo",
+              "description": "foo",
+              "bindable": false,
+              "plans": [
+                {
+                  "id": "05a7f6e0-f705-3c0c-b729-1c1b5d4baa74",
+                  "name": "foo-a",
+                  "description": "foo-a"
+                },
+                {
+                  "id": "68d4b7ae-aafc-3f06-9787-0605ff3a2d49",
+                  "name": "foo-b",
+                  "description": "foo-b",
+                  "free": false
+                }
+              ]
+            },
+            {
+              "id": "37b51d19-4a75-33e4-9b56-f6524f2d51f2",
+              "name": "bar",
+              "description": "bar",
+              "bindable": false,
+              "plans": [
+                {
+                  "id": "b0bc487b-3a0a-349d-b59a-4d3c7c0e3aab",
+                  "name": "bar-a",
+                  "description": "bar-a"
+                },
+                {
+                  "id": "15f3a75d-4d36-399c-8a33-6f74d143c126",
+                  "name": "bar-b",
+                  "description": "bar-b",
+                  "free": false
+                }
+              ]
+            }
+          ]
+        }

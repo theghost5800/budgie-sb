@@ -5,7 +5,7 @@ import java.text.MessageFormat;
 import com.google.gson.Gson;
 import com.sap.dummy.broker.domain.Catalog;
 
-public class Configuration {
+public class ApplicationConfiguration {
 
     private static final String CFG_CATALOG = "CATALOG";
 
@@ -13,11 +13,11 @@ public class Configuration {
     private Environment environment;
     private Catalog catalog;
 
-    public Configuration() {
+    public ApplicationConfiguration() {
         this(new Environment());
     }
     
-    public Configuration(Environment environment) {
+    public ApplicationConfiguration(Environment environment) {
         this.environment = environment;
     }
 

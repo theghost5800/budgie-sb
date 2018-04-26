@@ -1,4 +1,4 @@
-package com.sap.dummy.broker.configuration;
+package com.sap.broker.dummy.configuration;
 
 import javax.servlet.ServletContext;
 

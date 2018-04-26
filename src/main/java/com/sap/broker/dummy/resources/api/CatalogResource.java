@@ -1,4 +1,4 @@
-package com.sap.dummy.broker.resources.api;
+package com.sap.broker.dummy.resources.api;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -8,8 +8,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.springframework.stereotype.Component;
 
-import com.sap.dummy.broker.configuration.ApplicationConfiguration;
-import com.sap.dummy.broker.domain.Catalog;
+import com.sap.broker.dummy.configuration.ApplicationConfiguration;
+import com.sap.broker.dummy.domain.Catalog;
 
 @Path("/catalog")
 @Component

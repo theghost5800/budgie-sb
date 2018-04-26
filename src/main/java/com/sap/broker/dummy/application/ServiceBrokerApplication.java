@@ -1,4 +1,4 @@
-package com.sap.dummy.broker.application;
+package com.sap.broker.dummy.application;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -6,8 +6,8 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-import com.sap.dummy.broker.providers.GsonMessageBodyWriter;
-import com.sap.dummy.broker.resources.api.CatalogResource;
+import com.sap.broker.dummy.providers.GsonMessageBodyWriter;
+import com.sap.broker.dummy.resources.api.CatalogResource;
 
 @ApplicationPath("/v2")
 public class ServiceBrokerApplication extends Application {

@@ -1,4 +1,4 @@
-package com.sap.dummy.broker;
+package com.sap.broker.dummy;
 
 public class SpringComponentScanMarker {
 

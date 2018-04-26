@@ -1,4 +1,4 @@
-package com.sap.dummy.broker.providers;
+package com.sap.broker.dummy.providers;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -1,4 +1,4 @@
-package com.sap.dummy.broker.configuration;
+package com.sap.broker.dummy.configuration;
 
 import java.text.MessageFormat;
 
@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
-import com.sap.dummy.broker.domain.Catalog;
+import com.sap.broker.dummy.domain.Catalog;
 
 @Component
 public class ApplicationConfiguration {

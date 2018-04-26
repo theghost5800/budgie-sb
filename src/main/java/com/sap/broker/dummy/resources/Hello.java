@@ -1,4 +1,4 @@
-package com.sap.dummy.broker.resources;
+package com.sap.broker.dummy.resources;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

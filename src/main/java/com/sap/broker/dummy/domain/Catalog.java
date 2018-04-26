@@ -1,4 +1,4 @@
-package com.sap.dummy.broker.domain;
+package com.sap.broker.dummy.domain;
 
 import java.util.List;
 

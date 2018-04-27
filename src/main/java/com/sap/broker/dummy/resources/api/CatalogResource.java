@@ -6,13 +6,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.springframework.stereotype.Component;
-
 import com.sap.broker.dummy.configuration.ApplicationConfiguration;
 import com.sap.broker.dummy.domain.Catalog;
 
 @Path("/catalog")
-@Component
 @Produces(MediaType.APPLICATION_JSON)
 public class CatalogResource {
 

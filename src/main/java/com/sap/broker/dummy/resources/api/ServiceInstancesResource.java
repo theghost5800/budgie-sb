@@ -48,7 +48,7 @@ public class ServiceInstancesResource {
 
     private boolean existsIdentical(ServiceInstance serviceInstance) {
         ServiceInstance existingServiceInstance = serviceBroker.get(serviceInstance.getId());
-        return existingServiceInstance != null && serviceInstance.equals(existingServiceInstance);
+        return serviceInstance.equals(existingServiceInstance);
     }
 
 }

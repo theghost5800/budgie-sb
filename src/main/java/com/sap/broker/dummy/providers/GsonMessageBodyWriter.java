@@ -4,9 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
+import javax.inject.Inject;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -20,6 +19,13 @@ import com.google.gson.Gson;
 @Produces(MediaType.APPLICATION_JSON)
 public class GsonMessageBodyWriter<T> implements MessageBodyWriter<T> {
 
+    private Gson gson;
+
+    @Inject
+    public GsonMessageBodyWriter(Gson gson) {
+        this.gson = gson;
+    }
+
     @Override
     public long getSize(T t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
         return -1;
@@ -29,15 +35,9 @@ public class GsonMessageBodyWriter<T> implements MessageBodyWriter<T> {
     public void writeTo(T t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
         MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
 
-        String stringJson = new Gson().toJson(t);
-        byte[] binaryJson = stringJson.getBytes(getCharset(mediaType));
+        String stringJson = gson.toJson(t);
+        byte[] binaryJson = stringJson.getBytes(MediaTypeUtil.getCharset(mediaType));
         entityStream.write(binaryJson);
-    }
-
-    private Charset getCharset(MediaType mediaType) {
-        String charsetName = mediaType.getParameters()
-            .get(MediaType.CHARSET_PARAMETER);
-        return charsetName == null ? StandardCharsets.UTF_8 : Charset.forName(charsetName);
     }
 
     @Override

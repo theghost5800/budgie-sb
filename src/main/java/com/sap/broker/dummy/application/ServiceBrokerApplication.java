@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import com.sap.broker.dummy.providers.GsonMessageBodyReader;
 import com.sap.broker.dummy.providers.GsonMessageBodyWriter;
 import com.sap.broker.dummy.resources.api.CatalogResource;
 
@@ -14,9 +15,10 @@ public class ServiceBrokerApplication extends Application {
 
     @Override
     public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<Class<?>>();
+        Set<Class<?>> classes = new HashSet<>();
         classes.add(CatalogResource.class);
         classes.add(GsonMessageBodyWriter.class);
+        classes.add(GsonMessageBodyReader.class);
         return classes;
     }
 

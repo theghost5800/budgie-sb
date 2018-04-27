@@ -7,8 +7,8 @@ public class Plan {
     private UUID id;
     private String name;
     private String description;
-    private boolean free;
-    private boolean bindable;
+    private Boolean free;
+    private Boolean bindable;
 
     public Plan(UUID id, String name, String description) {
         this.id = id;
@@ -28,11 +28,11 @@ public class Plan {
         return description;
     }
 
-    public boolean isFree() {
+    public Boolean isFree() {
         return free;
     }
 
-    public boolean isBindable() {
+    public Boolean isBindable() {
         return bindable;
     }
 
@@ -48,14 +48,14 @@ public class Plan {
         this.description = description;
     }
 
-    public void setFree(boolean free) {
+    public void setFree(Boolean free) {
         this.free = free;
     }
 
-    public void setBindable(boolean bindable) {
+    public void setBindable(Boolean bindable) {
         this.bindable = bindable;
     }
-    
+
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }

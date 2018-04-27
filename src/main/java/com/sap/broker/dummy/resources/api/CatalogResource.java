@@ -6,23 +6,23 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.sap.broker.dummy.configuration.ApplicationConfiguration;
 import com.sap.broker.dummy.domain.Catalog;
+import com.sap.broker.dummy.impl.ServiceBroker;
 
 @Path("/catalog")
 @Produces(MediaType.APPLICATION_JSON)
 public class CatalogResource {
 
-    private ApplicationConfiguration configuration;
+    private ServiceBroker serviceBroker;
 
     @Inject
-    public CatalogResource(ApplicationConfiguration configuration) {
-        this.configuration = configuration;
+    public CatalogResource(ServiceBroker serviceBroker) {
+        this.serviceBroker = serviceBroker;
     }
 
     @GET
     public Catalog getCatalog() {
-        return configuration.getCatalog();
+        return serviceBroker.getCatalog();
     }
 
 }

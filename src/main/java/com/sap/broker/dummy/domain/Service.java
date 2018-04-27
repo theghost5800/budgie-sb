@@ -29,31 +29,6 @@ public class Service {
         this.plans = plans;
     }
 
-    public Service withTags(List<String> tags) {
-        this.tags = tags;
-        return this;
-    }
-
-    public Service withRequires(List<String> requires) {
-        this.requires = requires;
-        return this;
-    }
-
-    public Service withInstancesRetrievable(boolean instancesRetrievable) {
-        this.instancesRetrievable = instancesRetrievable;
-        return this;
-    }
-
-    public Service withBindingsRetrievable(boolean bindingsRetrievable) {
-        this.bindingsRetrievable = bindingsRetrievable;
-        return this;
-    }
-
-    public Service withPlanUpdateable(boolean planUpdateable) {
-        this.planUpdateable = planUpdateable;
-        return this;
-    }
-
     public UUID getId() {
         return id;
     }
@@ -92,6 +67,53 @@ public class Service {
 
     public List<Plan> getPlans() {
         return plans;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public void setRequires(List<String> requires) {
+        this.requires = requires;
+    }
+
+    public void setBindable(boolean bindable) {
+        this.bindable = bindable;
+    }
+
+    public void setInstancesRetrievable(boolean instancesRetrievable) {
+        this.instancesRetrievable = instancesRetrievable;
+    }
+
+    public void setBindingsRetrievable(boolean bindingsRetrievable) {
+        this.bindingsRetrievable = bindingsRetrievable;
+    }
+
+    public void setPlanUpdateable(boolean planUpdateable) {
+        this.planUpdateable = planUpdateable;
+    }
+
+    public void setPlans(List<Plan> plans) {
+        this.plans = plans;
+    }
+
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+        for (Plan plan : getPlans()) {
+            plan.accept(visitor);
+        }
     }
 
 }

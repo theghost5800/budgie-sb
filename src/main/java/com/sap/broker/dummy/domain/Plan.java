@@ -16,14 +16,6 @@ public class Plan {
         this.description = description;
     }
 
-    public void withFree(boolean free) {
-        this.free = free;
-    }
-
-    public void withBindable(boolean bindable) {
-        this.bindable = bindable;
-    }
-
     public UUID getId() {
         return id;
     }
@@ -42,6 +34,30 @@ public class Plan {
 
     public boolean isBindable() {
         return bindable;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setFree(boolean free) {
+        this.free = free;
+    }
+
+    public void setBindable(boolean bindable) {
+        this.bindable = bindable;
+    }
+    
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 
 }

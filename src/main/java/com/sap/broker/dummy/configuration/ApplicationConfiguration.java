@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.sap.broker.dummy.domain.Catalog;
+import com.sap.broker.dummy.helpers.GuidInsertingVisitor;
 
 @Component
 public class ApplicationConfiguration {
@@ -27,6 +28,7 @@ public class ApplicationConfiguration {
     public Catalog getCatalog() {
         if (catalog == null) {
             catalog = getCatalogFromEnvironment();
+            fillInMissingGuids(catalog);
         }
         return catalog;
     }
@@ -37,6 +39,10 @@ public class ApplicationConfiguration {
             throw new IllegalStateException(MessageFormat.format("{0} environment variable is not set.", CFG_CATALOG));
         }
         return gson.fromJson(catalogJson, Catalog.class);
+    }
+
+    private void fillInMissingGuids(Catalog catalog) {
+        catalog.accept(new GuidInsertingVisitor());
     }
 
 }

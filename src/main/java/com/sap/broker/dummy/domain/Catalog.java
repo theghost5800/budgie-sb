@@ -14,4 +14,15 @@ public class Catalog {
         return services;
     }
 
+    public void setServices(List<Service> services) {
+        this.services = services;
+    }
+
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+        for (Service service : getServices()) {
+            service.accept(visitor);
+        }
+    }
+
 }

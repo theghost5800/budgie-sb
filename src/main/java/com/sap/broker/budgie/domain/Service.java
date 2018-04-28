@@ -92,7 +92,7 @@ public class Service {
     public void accept(Visitor visitor) {
         visitor.visit(this);
         for (Plan plan : getPlans()) {
-            plan.accept(visitor);
+            plan.accept(this, visitor);
         }
     }
 

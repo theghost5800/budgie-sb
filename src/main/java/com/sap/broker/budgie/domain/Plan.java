@@ -56,8 +56,8 @@ public class Plan {
         this.bindable = bindable;
     }
 
-    public void accept(Visitor visitor) {
-        visitor.visit(this);
+    void accept(Service service, Visitor visitor) {
+        visitor.visit(service, this);
     }
 
 }

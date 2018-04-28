@@ -8,7 +8,7 @@ public interface Visitor {
     default void visit(Service service) {
     }
 
-    default void visit(Plan plan) {
+    default void visit(Service service, Plan plan) {
     }
 
 }

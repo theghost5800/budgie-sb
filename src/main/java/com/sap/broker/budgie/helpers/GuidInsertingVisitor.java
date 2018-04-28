@@ -17,13 +17,14 @@ public class GuidInsertingVisitor implements Visitor {
     }
 
     @Override
-    public void visit(Plan plan) {
+    public void visit(Service service, Plan plan) {
         if (plan.getId() == null) {
-            plan.setId(generateGuid(plan.getName()));
+            plan.setId(generateGuid(service.getName(), plan.getName()));
         }
     }
 
-    private UUID generateGuid(String name) {
+    private UUID generateGuid(String... names) {
+        String name = String.join("", names);
         return UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));
     }
 

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -62,6 +63,29 @@ public class ServiceInstancesResource {
     private boolean existsIdentical(ServiceInstance serviceInstance) {
         ServiceInstance existingServiceInstance = serviceBroker.get(serviceInstance.getId(), false);
         return serviceInstance.equals(existingServiceInstance);
+    }
+
+    @DELETE
+    public Response deleteAll() {
+        serviceBroker.deleteAll();
+        return Response.ok()
+            .entity(new Object())
+            .build();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response delete(@PathParam("id") UUID id) {
+        ServiceInstance serviceInstance = serviceBroker.get(id, false);
+        if (serviceInstance == null) {
+            return Response.status(Status.GONE)
+                .entity(new Object())
+                .build();
+        }
+        serviceBroker.delete(id);
+        return Response.ok()
+            .entity(new Object())
+            .build();
     }
 
 }

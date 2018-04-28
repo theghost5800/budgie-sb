@@ -50,4 +50,15 @@ public class ServiceBroker {
         serviceInstances.put(serviceInstance.getId(), serviceInstance);
     }
 
+    public void deleteAll() {
+        serviceInstances.clear();
+    }
+
+    public void delete(UUID id) {
+        ServiceInstance serviceInstance = serviceInstances.remove(id);
+        if (serviceInstance == null) {
+            throw new NotFoundException(MessageFormat.format("Service instance \"{0}\" not found!", id));
+        }
+    }
+
 }

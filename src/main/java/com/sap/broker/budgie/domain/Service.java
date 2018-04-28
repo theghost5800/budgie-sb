@@ -12,7 +12,7 @@ public class Service {
     private String description;
     private List<String> tags;
     private List<String> requires;
-    private boolean bindable;
+    private Boolean bindable;
     @SerializedName("plan_updateable")
     private Boolean planUpdateable;
     private List<Plan> plans;
@@ -45,7 +45,7 @@ public class Service {
         return requires;
     }
 
-    public boolean isBindable() {
+    public Boolean isBindable() {
         return bindable;
     }
 
@@ -77,7 +77,7 @@ public class Service {
         this.requires = requires;
     }
 
-    public void setBindable(boolean bindable) {
+    public void setBindable(Boolean bindable) {
         this.bindable = bindable;
     }
 

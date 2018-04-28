@@ -1,6 +1,7 @@
 package com.sap.broker.budgie.configuration;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.sap.broker.budgie.Messages;
 import com.sap.broker.budgie.domain.Catalog;
-import com.sap.broker.budgie.helpers.GuidInsertingVisitor;
+import com.sap.broker.budgie.domain.Visitor;
 
 @Component
 public class ApplicationConfiguration {
@@ -16,17 +17,19 @@ public class ApplicationConfiguration {
     static final String CFG_CATALOG = "CATALOG";
 
     private Environment environment;
+    private List<Visitor> catalogVisitors;
     private Catalog catalog;
 
     @Inject
-    public ApplicationConfiguration(Environment environment) {
+    public ApplicationConfiguration(Environment environment, List<Visitor> catalogVisitors) {
         this.environment = environment;
+        this.catalogVisitors = catalogVisitors;
     }
 
     public Catalog getCatalog() {
         if (catalog == null) {
             catalog = getCatalogFromEnvironment();
-            fillInMissingGuids(catalog);
+            process(catalog);
         }
         return catalog;
     }
@@ -34,13 +37,15 @@ public class ApplicationConfiguration {
     private Catalog getCatalogFromEnvironment() {
         Catalog catalog = environment.getJsonVariable(CFG_CATALOG, Catalog.class);
         if (catalog == null) {
-            throw new IllegalStateException(MessageFormat.format(Messages.ENVIRONMENT_VARIABLE_IS_NOT_SET, CFG_CATALOG));
+            throw new IllegalStateException(MessageFormat.format(Messages.ENVIRONMENT_VARIABLE_0_IS_NOT_SET, CFG_CATALOG));
         }
         return catalog;
     }
 
-    private void fillInMissingGuids(Catalog catalog) {
-        catalog.accept(new GuidInsertingVisitor());
+    private void process(Catalog catalog) {
+        for (Visitor visitor : catalogVisitors) {
+            catalog.accept(visitor);
+        }
     }
 
 }

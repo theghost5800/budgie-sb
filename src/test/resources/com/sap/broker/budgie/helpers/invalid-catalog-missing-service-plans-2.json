@@ -1,0 +1,19 @@
+{
+  "services": [
+    {
+      "id": "be4a6cdd-20e5-3b17-9166-f1c182fef95a",
+      "name": "postgresql-v9.4",
+      "description": "Relational database with an object-oriented model (version 9.4).",
+      "tags": [
+        "db",
+        "postgresql"
+      ],
+      "requires": [
+        "route_forwarding"
+      ],
+      "bindable": true,
+      "plan_updateable": true,
+      "plans": []
+    }
+  ]
+}

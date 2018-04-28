@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class TestUtil {
@@ -14,6 +15,11 @@ public class TestUtil {
         return new GsonBuilder().setPrettyPrinting()
             .create()
             .toJson(object);
+    }
+
+    public static <T> T loadResourceAsObject(String resourcePath, Class<T> resourceType, Class<?> caller) throws IOException {
+        String resourceJson = loadResourceAsString(resourcePath, caller);
+        return new Gson().fromJson(resourceJson, resourceType);
     }
 
     public static String loadResourceAsString(String resourcePath, Class<?> caller) throws IOException {

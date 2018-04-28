@@ -1,0 +1,31 @@
+{
+  "services": [
+    {
+      "id": "be4a6cdd-20e5-3b17-9166-f1c182fef95a",
+      "name": "",
+      "description": "Relational database with an object-oriented model (version 9.4).",
+      "tags": [
+        "db",
+        "postgresql"
+      ],
+      "requires": [
+        "route_forwarding"
+      ],
+      "bindable": true,
+      "plan_updateable": true,
+      "plans": [
+        {
+          "id": "05e510a2-da31-37b9-9a77-349ec750989d",
+          "name": "small",
+          "description": "PostgreSQL relational database service (version 9.4) - small plan."
+        },
+        {
+          "id": "d6eef5a8-156d-31dc-9ab2-d3f20dde0a6d",
+          "name": "large",
+          "description": "PostgreSQL relational database service (version 9.4) - large plan.",
+          "free": false
+        }
+      ]
+    }
+  ]
+}

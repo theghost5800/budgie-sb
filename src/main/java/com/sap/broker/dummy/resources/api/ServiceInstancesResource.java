@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -63,6 +64,20 @@ public class ServiceInstancesResource {
     private boolean existsIdentical(ServiceInstance serviceInstance) {
         ServiceInstance existingServiceInstance = serviceBroker.get(serviceInstance.getId(), false);
         return serviceInstance.equals(existingServiceInstance);
+    }
+
+    @PATCH
+    @Path("/{id}")
+    public Response update(@PathParam("id") UUID id, ServiceInstance serviceInstance) {
+        serviceInstance.setId(id);
+        return update(serviceInstance);
+    }
+
+    private Response update(ServiceInstance serviceInstance) {
+        serviceBroker.update(serviceInstance);
+        return Response.ok()
+            .entity(new Object())
+            .build();
     }
 
     @DELETE

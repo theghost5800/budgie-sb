@@ -50,6 +50,10 @@ public class ServiceBroker {
         serviceInstances.put(serviceInstance.getId(), serviceInstance);
     }
 
+    public void update(ServiceInstance serviceInstance) {
+        serviceInstances.put(serviceInstance.getId(), serviceInstance);
+    }
+
     public void deleteAll() {
         serviceInstances.clear();
     }

@@ -1,9 +1,11 @@
 package com.sap.broker.dummy.resources.api;
 
+import java.util.Collection;
 import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -27,6 +29,17 @@ public class ServiceInstancesResource {
         this.serviceBroker = serviceBroker;
     }
 
+    @GET
+    public Collection<ServiceInstance> getAll() {
+        return serviceBroker.getAll();
+    }
+
+    @GET
+    @Path("/{id}")
+    public ServiceInstance get(@PathParam("id") UUID id) {
+        return serviceBroker.get(id);
+    }
+
     @PUT
     @Path("/{id}")
     public Response create(@PathParam("id") UUID id, ServiceInstance serviceInstance) {
@@ -47,7 +60,7 @@ public class ServiceInstancesResource {
     }
 
     private boolean existsIdentical(ServiceInstance serviceInstance) {
-        ServiceInstance existingServiceInstance = serviceBroker.get(serviceInstance.getId());
+        ServiceInstance existingServiceInstance = serviceBroker.get(serviceInstance.getId(), false);
         return serviceInstance.equals(existingServiceInstance);
     }
 

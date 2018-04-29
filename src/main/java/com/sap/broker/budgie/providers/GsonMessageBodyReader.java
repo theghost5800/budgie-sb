@@ -31,10 +31,11 @@ public class GsonMessageBodyReader<T> implements MessageBodyReader<T> {
     @Override
     public T readFrom(Class<T> type, Type genericType, Annotation[] annotations, MediaType mediaType,
         MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
+        return readFrom(entityStream, MediaTypeUtil.getCharset(mediaType), type);
+    }
 
-        Charset charset = MediaTypeUtil.getCharset(mediaType);
-        InputStreamReader entityStreamReader = new InputStreamReader(entityStream, charset);
-        return gson.fromJson(entityStreamReader, type);
+    private T readFrom(InputStream entityStream, Charset charset, Class<T> type) {
+        return gson.fromJson(new InputStreamReader(entityStream, charset), type);
     }
 
     @Override

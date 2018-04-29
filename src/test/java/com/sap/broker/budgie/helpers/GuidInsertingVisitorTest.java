@@ -12,7 +12,7 @@ import com.sap.broker.budgie.domain.Service;
 
 public class GuidInsertingVisitorTest {
 
-    private GuidInsertingVisitor visitor = new GuidInsertingVisitor();
+    private final GuidInsertingVisitor visitor = new GuidInsertingVisitor();
 
     @Test
     public void testGuidsAreNotGeneratedForNullOrEmptyNames() {

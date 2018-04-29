@@ -9,21 +9,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
 import com.sap.broker.budgie.Messages;
+import com.sap.broker.budgie.MockitoExtension;
 import com.sap.broker.budgie.TestUtil;
 import com.sap.broker.budgie.domain.Catalog;
 import com.sap.broker.budgie.domain.Visitor;
 
+@ExtendWith(MockitoExtension.class)
 public class ApplicationConfigurationTest {
 
     private SpringConfiguration springConfiguration = new SpringConfiguration();
@@ -34,11 +35,6 @@ public class ApplicationConfigurationTest {
     private List<Visitor> catalogVisitors = createCatalogVisitors();
     @InjectMocks
     private ApplicationConfiguration configuration;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void testGetCatalogWhenMissing() {

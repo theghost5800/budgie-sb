@@ -17,29 +17,42 @@ public class ServiceBrokerExceptionMapper implements ExceptionMapper<Throwable> 
     @Override
     public Response toResponse(Throwable throwable) {
         if (throwable instanceof WebApplicationException) {
-            WebApplicationException e = (WebApplicationException) throwable;
-            return e.getResponse();
+            return fromWebApplicationException((WebApplicationException) throwable);
         }
-
         if (throwable instanceof NotFoundException) {
-            return Response.status(Status.NOT_FOUND)
-                .entity(fromThrowable(throwable))
-                .type(MediaType.APPLICATION_JSON)
-                .build();
+            return fromNotFoundException((NotFoundException) throwable);
         }
         if (throwable instanceof ConflictException) {
-            return Response.status(Status.CONFLICT)
-                .entity(fromThrowable(throwable))
-                .type(MediaType.APPLICATION_JSON)
-                .build();
+            return fromConflictException((ConflictException) throwable);
         }
-        return Response.status(Status.INTERNAL_SERVER_ERROR)
-            .entity(fromThrowable(throwable))
+        return fromThrowable(throwable);
+    }
+
+    private Response fromWebApplicationException(WebApplicationException e) {
+        Response generatedResponse = e.getResponse();
+        return fromThrowable(e, Status.fromStatusCode(generatedResponse.getStatus()));
+    }
+
+    private Response fromNotFoundException(NotFoundException e) {
+        return fromThrowable(e, Status.NOT_FOUND);
+    }
+
+    private Response fromConflictException(ConflictException e) {
+        return fromThrowable(e, Status.CONFLICT);
+    }
+
+    private Response fromThrowable(Throwable t) {
+        return fromThrowable(t, Status.INTERNAL_SERVER_ERROR);
+    }
+
+    private Response fromThrowable(Throwable throwable, Status status) {
+        return Response.status(status)
+            .entity(createServiceBrokerError(throwable))
             .type(MediaType.APPLICATION_JSON)
             .build();
     }
 
-    private ServiceBrokerError fromThrowable(Throwable throwable) {
+    private ServiceBrokerError createServiceBrokerError(Throwable throwable) {
         return new ServiceBrokerError(null, getErrorDescription(throwable));
     }
 

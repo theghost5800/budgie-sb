@@ -1,10 +1,14 @@
 package com.sap.broker.budgie.domain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
 import com.google.gson.annotations.SerializedName;
+import com.sap.broker.budgie.configuration.Exclude;
 
 public class ServiceInstance {
 
@@ -14,11 +18,21 @@ public class ServiceInstance {
     @SerializedName("plan_id")
     private UUID planId;
     private Map<String, Object> parameters;
+    @Exclude
+    private List<ServiceBinding> bindings;
+    private ServiceOperation serviceOperation;
 
-    public ServiceInstance(UUID id, UUID serviceId, UUID planId) {
+    public ServiceInstance() {
+        this.parameters = new HashMap<>();
+        this.bindings = new ArrayList<>();
+    }
+
+    public ServiceInstance(UUID id, UUID serviceId, UUID planId, List<ServiceBinding> bindings, ServiceOperation serviceOperation) {
         this.id = id;
         this.serviceId = serviceId;
         this.planId = planId;
+        this.bindings = bindings;
+        this.serviceOperation = serviceOperation;
     }
 
     public UUID getId() {
@@ -51,6 +65,40 @@ public class ServiceInstance {
 
     public void setParameters(Map<String, Object> parameters) {
         this.parameters = parameters;
+    }
+
+    public List<ServiceBinding> getBindings() {
+        return bindings;
+    }
+
+    public void setBindings(List<ServiceBinding> bindings) {
+        this.bindings = bindings;
+    }
+
+    public ServiceOperation getServiceOperation() {
+        return serviceOperation;
+    }
+
+    public void setServiceOperation(ServiceOperation serviceOperation) {
+        this.serviceOperation = serviceOperation;
+    }
+
+    public void addServiceBinding(ServiceBinding binding) {
+        bindings.add(binding);
+    }
+
+    public ServiceBinding getServiceBinding(UUID id) {
+        for (ServiceBinding binding : bindings) {
+            if (binding.getId()
+                .equals(id)) {
+                return binding;
+            }
+        }
+        return null;
+    }
+
+    public void removeBinding(ServiceBinding serviceBinding) {
+        bindings.remove(serviceBinding);
     }
 
     @Override

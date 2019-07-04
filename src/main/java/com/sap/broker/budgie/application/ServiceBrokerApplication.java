@@ -10,6 +10,7 @@ import com.sap.broker.budgie.providers.GsonMessageBodyReader;
 import com.sap.broker.budgie.providers.GsonMessageBodyWriter;
 import com.sap.broker.budgie.providers.ServiceBrokerExceptionMapper;
 import com.sap.broker.budgie.resources.api.CatalogResource;
+import com.sap.broker.budgie.resources.api.ServiceBindingsResource;
 import com.sap.broker.budgie.resources.api.ServiceInstancesResource;
 
 @ApplicationPath("/v2")
@@ -20,6 +21,7 @@ public class ServiceBrokerApplication extends Application {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(CatalogResource.class);
         classes.add(ServiceInstancesResource.class);
+        classes.add(ServiceBindingsResource.class);
         classes.add(GsonMessageBodyWriter.class);
         classes.add(GsonMessageBodyReader.class);
         classes.add(ServiceBrokerExceptionMapper.class);

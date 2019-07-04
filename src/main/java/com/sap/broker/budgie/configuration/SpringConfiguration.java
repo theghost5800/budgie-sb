@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sap.broker.budgie.SpringComponentScanMarker;
 import com.sap.broker.budgie.domain.Visitor;
 import com.sap.broker.budgie.helpers.CatalogValidatingVisitor;
@@ -19,7 +20,8 @@ public class SpringConfiguration {
 
     @Bean
     public Gson gson() {
-        return new Gson();
+        return new GsonBuilder().setExclusionStrategies(new AnnotationExclusionStrategy())
+            .create();
     }
 
     @Bean

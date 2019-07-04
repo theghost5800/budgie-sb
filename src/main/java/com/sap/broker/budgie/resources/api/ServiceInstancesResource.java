@@ -17,6 +17,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.sap.broker.budgie.domain.ServiceInstance;
+import com.sap.broker.budgie.domain.ServiceOperationState;
+import com.sap.broker.budgie.handlers.AsyncParametersHandler;
 import com.sap.broker.budgie.impl.ServiceBroker;
 
 @Path("/service_instances")
@@ -25,10 +27,12 @@ import com.sap.broker.budgie.impl.ServiceBroker;
 public class ServiceInstancesResource {
 
     private ServiceBroker serviceBroker;
+    private AsyncParametersHandler asyncParametersHandler;
 
     @Inject
-    public ServiceInstancesResource(ServiceBroker serviceBroker) {
+    public ServiceInstancesResource(ServiceBroker serviceBroker, AsyncParametersHandler asyncParametersHandler) {
         this.serviceBroker = serviceBroker;
+        this.asyncParametersHandler = asyncParametersHandler;
     }
 
     @GET
@@ -40,6 +44,19 @@ public class ServiceInstancesResource {
     @Path("/{id}")
     public ServiceInstance get(@PathParam("id") UUID id) {
         return serviceBroker.get(id);
+    }
+
+    @GET
+    @Path("/{id}/last_operation")
+    public Response getLastOperation(@PathParam("id") UUID id) {
+        ServiceInstance serviceInstance = serviceBroker.get(id, false);
+        if (serviceInstance == null) {
+            return Response.status(Status.GONE)
+                .build();
+        }
+        return Response.status(Status.OK)
+            .entity(serviceInstance.getServiceOperation())
+            .build();
     }
 
     @PUT
@@ -55,8 +72,23 @@ public class ServiceInstancesResource {
                 .entity(new Object())
                 .build();
         }
-        serviceBroker.create(serviceInstance);
-        return Response.status(Status.CREATED)
+        if (isAsyncOperation(serviceInstance)) {
+            int timeForCreation = asyncParametersHandler.getTimeOfAsyncExecutionInSeconds(serviceInstance.getParameters());
+            serviceBroker.asyncCreate(serviceInstance, timeForCreation);
+        } else {
+            serviceBroker.create(serviceInstance);
+        }
+        return getAsyncOrSyncResponse(serviceInstance);
+    }
+
+    private Response getAsyncOrSyncResponse(ServiceInstance serviceInstance) {
+        if (serviceInstance.getServiceOperation()
+            .getState() == ServiceOperationState.IN_PROGRESS) {
+            return Response.status(Status.ACCEPTED)
+                .entity(new Object())
+                .build();
+        }
+        return Response.status(Status.OK)
             .entity(new Object())
             .build();
     }
@@ -64,6 +96,10 @@ public class ServiceInstancesResource {
     private boolean existsIdentical(ServiceInstance serviceInstance) {
         ServiceInstance existingServiceInstance = serviceBroker.get(serviceInstance.getId(), false);
         return serviceInstance.equals(existingServiceInstance);
+    }
+
+    private boolean isAsyncOperation(ServiceInstance serviceInstance) {
+        return asyncParametersHandler.shouldExecuteOperationAsync(serviceInstance.getParameters());
     }
 
     @PATCH
@@ -97,10 +133,13 @@ public class ServiceInstancesResource {
                 .entity(new Object())
                 .build();
         }
-        serviceBroker.delete(id);
-        return Response.ok()
-            .entity(new Object())
-            .build();
+        if (isAsyncOperation(serviceInstance)) {
+            int timeForDeletion = asyncParametersHandler.getTimeOfAsyncExecutionInSeconds(serviceInstance.getParameters());
+            serviceBroker.asyncDelete(serviceInstance, timeForDeletion);
+        } else {
+            serviceBroker.delete(id);
+        }
+        return getAsyncOrSyncResponse(serviceInstance);
     }
 
 }

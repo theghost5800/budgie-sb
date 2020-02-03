@@ -6,11 +6,12 @@
 
 Route: `PUT /v2/configuration`
 
-Body: `BehaviorConfiguration` object, which may have the following properties:
+Body: `BehaviorConfiguration` object in JSON format, which may have the following properties:
 
-* `sync`: integer - if set, an operation will be synchronous and will take the specified time in seconds. It is the default behavior and may be set if the user wants to test a scenario where the request timeout. 
-* `async`: integer - if set, an operation will be asynchronous and will take the specified time in seconds.  
-For example: `async: 10` will result in asynchronous operations, lasting 10 seconds.
+* `id`: string/uuid - the unique ID of the configuration.
+* `sync`: integer - if set, an operation will be synchronous and will take the specified time in milliseconds. It is the default behavior and may be set if the user wants to test a scenario where the request timeouts. 
+* `async`: integer - if set, an operation will be asynchronous and will take the specified time in milliseconds.  
+For example: `async: 10` will result in asynchronous operations, lasting 10 milliseconds.
 * `failCreate`: array of `FailConfiguration` objects - if set, it can enable failing create operation.
 * `failUpdate`: array of `FailConfiguration` objects - if set, it can enable failing update operation.
 * `failDelete`: array of `FailConfiguration` objects - if set, it can enable failing delete operation.
@@ -55,13 +56,13 @@ Body: `BehaviorConfiguration` object (see the upper section).
 
 Route: `DELETE /v2/configuration`
 
-This will cause the broker to act normally and synchronously.
+This will cause the broker to fall back to normal execution, which means synchronous operations with no downtime.
 
 ## Configuration example
 
 ```
 {
-    "async": 50,
+    "async": 5000,
     "failDelete": [
         {
             "status": 400,
@@ -87,7 +88,18 @@ This will cause the broker to act normally and synchronously.
     ]
 }
 ```
-This example specifies that the behavior of the service broker will be asynchronous and each request will take 50 seconds.
+This example specifies that the behavior of the service broker will be asynchronous and each request will take 5 seconds.
 Deletion of service instances, which have service offering `foo` OR `bar` AND plan `1.1` OR `1.2` will fail with status code 400.
 Deletion of service instance, which has an ID `05e09a19-8830-456a-b3d3-fb82feacbebe` will also fail with status code 404.
 Unbinding of services will fail every time with status code 400.
+
+## Adding new service offerings
+
+### Request
+
+Route: `PUT /v2/catalog`
+
+The body should follow the `ServiceOffering` data structure,
+which is specified in the Official [Open Service Broker API](https://github.com/openservicebrokerapi/servicebroker/blob/v2.15/spec.md).
+
+Users can add new service offerings with new service plans and then configure operations on them. This is useful for clean automation tests.

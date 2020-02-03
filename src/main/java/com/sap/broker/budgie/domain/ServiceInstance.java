@@ -1,5 +1,6 @@
 package com.sap.broker.budgie.domain;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -14,6 +15,7 @@ public class ServiceInstance {
     @SerializedName("plan_id")
     private UUID planId;
     private Map<String, Object> parameters;
+    private Map<UUID, Binding> bindings = new HashMap<>();
 
     public ServiceInstance(UUID id, UUID serviceId, UUID planId) {
         this.id = id;
@@ -53,6 +55,27 @@ public class ServiceInstance {
         this.parameters = parameters;
     }
 
+    public Map<UUID, Binding> getBindings() {
+        return bindings;
+    }
+
+    public void setBindings(Map<UUID, Binding> bindings) {
+        this.bindings = bindings;
+    }
+
+    public void bind(UUID bindingId, Binding binding) {
+        binding.setId(bindingId);
+        bindings.put(id, binding);
+    }
+
+    public Binding getBinding(UUID bindingId) {
+        return bindings.get(bindingId);
+    }
+
+    public void unbind(UUID bindingId) {
+        bindings.remove(bindingId);
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -61,6 +84,7 @@ public class ServiceInstance {
         result = prime * result + ((serviceId == null) ? 0 : serviceId.hashCode());
         result = prime * result + ((planId == null) ? 0 : planId.hashCode());
         result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+        result = prime * result + ((bindings == null) ? 0 : bindings.hashCode());
         return result;
     }
 
@@ -86,6 +110,9 @@ public class ServiceInstance {
             return false;
         }
         if (!Objects.equals(parameters, other.parameters)) {
+            return false;
+        }
+        if (!Objects.equals(bindings, other.bindings)) {
             return false;
         }
         return true;

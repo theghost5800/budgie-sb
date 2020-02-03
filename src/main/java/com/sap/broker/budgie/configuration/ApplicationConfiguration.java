@@ -43,9 +43,7 @@ public class ApplicationConfiguration {
     }
 
     private void process(Catalog catalog) {
-        for (Visitor visitor : catalogVisitors) {
-            catalog.accept(visitor);
-        }
+        catalogVisitors.forEach(catalog::accept);
     }
 
 }

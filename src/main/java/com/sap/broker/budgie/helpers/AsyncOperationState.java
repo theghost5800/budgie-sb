@@ -1,5 +1,7 @@
 package com.sap.broker.budgie.helpers;
 
+import com.google.gson.annotations.SerializedName;
+
 public class AsyncOperationState {
 
     private State state;
@@ -30,19 +32,13 @@ public class AsyncOperationState {
     }
 
     public enum State {
-        SUCCEEDED("succeeded"),
-        FAILED("failed"),
-        IN_PROGRESS("in progress");
+        @SerializedName("succeeded")
+        SUCCEEDED,
 
-        private final String name;
+        @SerializedName("failed")
+        FAILED,
 
-        State(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
+        @SerializedName("in progress")
+        IN_PROGRESS
     }
 }

@@ -15,7 +15,7 @@ public class ServiceInstance {
     @SerializedName("plan_id")
     private UUID planId;
     private Map<String, Object> parameters;
-    private Map<UUID, Binding> bindings = new HashMap<>();
+    private Map<UUID, Binding> bindings;
 
     public ServiceInstance(UUID id, UUID serviceId, UUID planId) {
         this.id = id;
@@ -64,16 +64,25 @@ public class ServiceInstance {
     }
 
     public void bind(UUID bindingId, Binding binding) {
+        validateBindingMap();
         binding.setId(bindingId);
         bindings.put(id, binding);
     }
 
     public Binding getBinding(UUID bindingId) {
+        validateBindingMap();
         return bindings.get(bindingId);
     }
 
     public void unbind(UUID bindingId) {
+        validateBindingMap();
         bindings.remove(bindingId);
+    }
+
+    private void validateBindingMap() {
+        if (bindings == null) {
+            setBindings(new HashMap<>());
+        }
     }
 
     @Override

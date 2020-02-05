@@ -6,13 +6,9 @@ import java.util.UUID;
 public class BehaviorConfiguration {
 
     private UUID id;
-    private Integer async;
-    private Integer sync;
-    private List<FailConfiguration> failUpdate;
-    private List<FailConfiguration> failCreate;
-    private List<FailConfiguration> failDelete;
-    private List<FailConfiguration> failBind;
-    private List<FailConfiguration> failUnbind;
+    private Integer asyncDuration;
+    private Integer syncDuration;
+    private List<FailConfiguration> failConfigurations;
 
     public UUID getId() {
         return id;
@@ -22,59 +18,27 @@ public class BehaviorConfiguration {
         this.id = id;
     }
 
-    public Integer getAsync() {
-        return async;
+    public Integer getAsyncDuration() {
+        return asyncDuration;
     }
 
-    public void setAsync(Integer async) {
-        this.async = async;
+    public void setAsyncDuration(Integer asyncDuration) {
+        this.asyncDuration = asyncDuration;
     }
 
-    public Integer getSync() {
-        return sync;
+    public Integer getSyncDuration() {
+        return syncDuration;
     }
 
-    public void setSync(Integer sync) {
-        this.sync = sync;
+    public void setSyncDuration(Integer syncDuration) {
+        this.syncDuration = syncDuration;
     }
 
-    public List<FailConfiguration> getFailUpdate() {
-        return failUpdate;
+    public List<FailConfiguration> getFailConfigurations() {
+        return failConfigurations;
     }
 
-    public void setFailUpdate(List<FailConfiguration> failUpdate) {
-        this.failUpdate = failUpdate;
-    }
-
-    public List<FailConfiguration> getFailCreate() {
-        return failCreate;
-    }
-
-    public void setFailCreate(List<FailConfiguration> failCreate) {
-        this.failCreate = failCreate;
-    }
-
-    public List<FailConfiguration> getFailDelete() {
-        return failDelete;
-    }
-
-    public void setFailDelete(List<FailConfiguration> failDelete) {
-        this.failDelete = failDelete;
-    }
-
-    public List<FailConfiguration> getFailBind() {
-        return failBind;
-    }
-
-    public void setFailBind(List<FailConfiguration> failBind) {
-        this.failBind = failBind;
-    }
-
-    public List<FailConfiguration> getFailUnbind() {
-        return failUnbind;
-    }
-
-    public void setFailUnbind(List<FailConfiguration> failUnbind) {
-        this.failUnbind = failUnbind;
+    public void setFailConfigurations(List<FailConfiguration> failConfigurations) {
+        this.failConfigurations = failConfigurations;
     }
 }

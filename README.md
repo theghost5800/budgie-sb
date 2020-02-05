@@ -9,18 +9,15 @@ Route: `PUT /v2/configuration`
 Body: `BehaviorConfiguration` object in JSON format, which may have the following properties:
 
 * `id`: string/uuid - the unique ID of the configuration.
-* `sync`: integer - if set, an operation will be synchronous and will take the specified time in milliseconds. It is the default behavior and may be set if the user wants to test a scenario where the request timeouts. 
-* `async`: integer - if set, an operation will be asynchronous and will take the specified time in milliseconds.  
+* `syncDuration`: integer - if set, an operation will be synchronous and will take the specified time in milliseconds. It is the default behavior and may be set if the user wants to test a scenario where the request timeouts. 
+* `asyncDuration`: integer - if set, an operation will be asynchronous and will take the specified time in milliseconds.  
 For example: `async: 10` will result in asynchronous operations, lasting 10 milliseconds.
-* `failCreate`: array of `FailConfiguration` objects - if set, it can enable failing create operation.
-* `failUpdate`: array of `FailConfiguration` objects - if set, it can enable failing update operation.
-* `failDelete`: array of `FailConfiguration` objects - if set, it can enable failing delete operation.
-* `failBind`: array of `FailConfiguration` objects - if set, it can enable failing bind operation.
-* `failUnbind`: array of `FailConfiguration` objects - if set, it can enable failing unbind operation.
+* `failConfigurations`: array of `FailConfiguration` objects - if set, it can enable failing create/update/delete/bind/unbind operation.
 
 `FailConfiguration` may have the following properties:
+* `operationType`: string - ***REQUIRED*** this property specifies the operation, which should fail. Valid values are `create`, `update`, `delete`, `bind` and `unbind`.
 * `all`: boolean - if set to true, every operation will fail.
-* `status`: integer - REQUIRED this is the http status code, which will be returned if any service instance match the fail condition.
+* `status`: integer - ***REQUIRED*** this is the http status code, which will be returned if any service instance match the fail condition.
 * `serviceIds`: array of strings - instances with service offering IDs matching the specified in this array, will fail the operation.
 * `serviceNames`: array of strings - instances with service offering names matching the specified in this array, will fail the operation.
 * `planIds`: array of strings - instances with service plan IDs matching the specified in this array, will fail the operation.
@@ -31,6 +28,8 @@ Bear in mind the the arrays of IDs or names combine with AND strategy, which mea
 Consider the following example:
 ```
     {
+        "operationType": "create",
+        "status": 400,
         "serviceNames": [
             "foo"
         ],
@@ -39,8 +38,8 @@ Consider the following example:
         ]
     }
 ```
-This `FailConfiguration` specifies that a service instance, which has service offering name `foo` AND service plan name `foo-a` OR `bar` will fail the operation.
-An instance, which has service offering 'foo' and a plan `baz` will go through standard operation.
+This `FailConfiguration` specifies that a service instance, which has service offering name `foo` AND service plan name `foo-a` OR `bar` will fail a create operation with status code 400.
+An instance, which has service offering `foo` and a plan `baz` will go through standard operation.
 
 ## Fetching the service broker behavior
 
@@ -63,8 +62,9 @@ This will cause the broker to fall back to normal execution, which means synchro
 ```
 {
     "async": 5000,
-    "failDelete": [
+    "failConfigurations": [
         {
+            "operationType": "delete",
             "status": 400,
             "serviceNames": [
                 "foo", "bar"
@@ -74,14 +74,14 @@ This will cause the broker to fall back to normal execution, which means synchro
             ]
         },
         {
+            "operationType": "delete",
             "status": 404,
             "instanceIds": [
                 "05e09a19-8830-456a-b3d3-fb82feacbebe"
             ]
-        }
-    ],
-    "failUnbind": [
+        },
         {
+            "operationType": "unbind",
             "all": true,
             "status": 400
         }

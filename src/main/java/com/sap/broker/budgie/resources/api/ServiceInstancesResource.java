@@ -9,8 +9,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.sap.broker.budgie.configuration.behavior.BehaviorEngine;
+import com.sap.broker.budgie.configuration.behavior.FailConfiguration;
 import com.sap.broker.budgie.domain.Binding;
 import com.sap.broker.budgie.domain.ServiceInstance;
+import com.sap.broker.budgie.exception.InterruptedOperationException;
 import com.sap.broker.budgie.helpers.AsyncOperation;
 import com.sap.broker.budgie.helpers.AsyncOperationState;
 import com.sap.broker.budgie.impl.AsyncOperationManager;
@@ -158,7 +160,8 @@ public class ServiceInstancesResource {
     }
 
     private Response createSync(UUID id, ServiceInstance serviceInstance) {
-        Optional<Integer> optionalStatusCode = behaviorEngine.shouldCreateFail(serviceInstance);
+        sleepIfWanted();
+        Optional<Integer> optionalStatusCode = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.CREATE, serviceInstance);
         if (optionalStatusCode.isPresent()) {
             return emptyBodyResponse(optionalStatusCode.get());
         }
@@ -168,13 +171,13 @@ public class ServiceInstancesResource {
 
     private Response createAsync(UUID id, ServiceInstance serviceInstance) {
         AsyncOperation asyncOperation = new AsyncOperation(() -> {
-            if (behaviorEngine.shouldCreateFail(serviceInstance).isPresent()) {
+            if (behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.CREATE, serviceInstance).isPresent()) {
                 return new AsyncOperationState(AsyncOperationState.State.FAILED);
             }
             serviceInstance.setId(id);
             create(serviceInstance);
             return new AsyncOperationState(AsyncOperationState.State.SUCCEEDED);
-        }, behaviorEngine.getTimeout());
+        }, behaviorEngine.getDuration());
         asyncOperationManager.addOperation(id, asyncOperation);
         return emptyBodyResponse(Status.ACCEPTED);
     }
@@ -194,33 +197,31 @@ public class ServiceInstancesResource {
 
     private Response updateAsync(UUID id, ServiceInstance serviceInstance) {
         AsyncOperation asyncOperation = new AsyncOperation(() -> {
-            if (behaviorEngine.shouldUpdateFail(serviceInstance).isPresent()) {
+            if (behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.UPDATE, serviceInstance).isPresent()) {
                 return new AsyncOperationState(AsyncOperationState.State.FAILED);
             }
             serviceInstance.setId(id);
-            update(serviceInstance);
+            serviceBroker.update(serviceInstance);
             return new AsyncOperationState(AsyncOperationState.State.SUCCEEDED);
-        }, behaviorEngine.getTimeout());
+        }, behaviorEngine.getDuration());
         asyncOperationManager.addOperation(id, asyncOperation);
         return emptyBodyResponse(Status.ACCEPTED);
     }
 
     private Response updateSync(UUID id, ServiceInstance serviceInstance) {
-        Optional<Integer> optionalStatusCode = behaviorEngine.shouldUpdateFail(serviceInstance);
+        sleepIfWanted();
+        Optional<Integer> optionalStatusCode = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.UPDATE, serviceInstance);
         if (optionalStatusCode.isPresent()) {
             return emptyBodyResponse(optionalStatusCode.get());
         }
         serviceInstance.setId(id);
-        return update(serviceInstance);
-    }
-
-    private Response update(ServiceInstance serviceInstance) {
         serviceBroker.update(serviceInstance);
         return emptyBodyResponse(Status.OK);
     }
 
     private Response deleteSync(UUID id, ServiceInstance serviceInstance) {
-        Optional<Integer> optionalStatusCode = behaviorEngine.shouldDeleteFail(serviceInstance);
+        sleepIfWanted();
+        Optional<Integer> optionalStatusCode = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.DELETE, serviceInstance);
         if (optionalStatusCode.isPresent()) {
             return emptyBodyResponse(optionalStatusCode.get());
         }
@@ -230,18 +231,19 @@ public class ServiceInstancesResource {
 
     private Response deleteAsync(UUID id, ServiceInstance serviceInstance) {
         AsyncOperation asyncOperation = new AsyncOperation(() -> {
-            if (behaviorEngine.shouldDeleteFail(serviceInstance).isPresent()) {
+            if (behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.DELETE, serviceInstance).isPresent()) {
                 return new AsyncOperationState(AsyncOperationState.State.FAILED);
             }
             serviceBroker.delete(id);
             return new AsyncOperationState(AsyncOperationState.State.SUCCEEDED);
-        }, behaviorEngine.getTimeout());
+        }, behaviorEngine.getDuration());
         asyncOperationManager.addOperation(id, asyncOperation);
         return emptyBodyResponse(Status.ACCEPTED);
     }
 
     private Response bindSync(UUID bindingId, ServiceInstance serviceInstance, Binding binding) {
-        Optional<Integer> optionalStatusCode = behaviorEngine.shouldBindFail(serviceInstance);
+        sleepIfWanted();
+        Optional<Integer> optionalStatusCode = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.BIND, serviceInstance);
         if (optionalStatusCode.isPresent()) {
             return emptyBodyResponse(optionalStatusCode.get());
         }
@@ -254,7 +256,7 @@ public class ServiceInstancesResource {
 
     private Response bindAsync(UUID bindingId, ServiceInstance serviceInstance, Binding binding) {
         AsyncOperation asyncOperation = new AsyncOperation(() -> {
-            if (behaviorEngine.shouldBindFail(serviceInstance).isPresent()) {
+            if (behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.BIND, serviceInstance).isPresent()) {
                 return new AsyncOperationState(AsyncOperationState.State.FAILED);
             }
             if (serviceInstance.getBinding(bindingId) != null) {
@@ -262,13 +264,14 @@ public class ServiceInstancesResource {
             }
             serviceInstance.bind(bindingId, binding);
             return new AsyncOperationState(AsyncOperationState.State.SUCCEEDED);
-        }, behaviorEngine.getTimeout());
+        }, behaviorEngine.getDuration());
         asyncOperationManager.addOperation(bindingId, asyncOperation);
         return emptyBodyResponse(Status.ACCEPTED);
     }
 
     private Response unbindSync(UUID bindingId, ServiceInstance serviceInstance) {
-        Optional<Integer> optionalStatusCode = behaviorEngine.shouldUnbindFail(serviceInstance);
+        sleepIfWanted();
+        Optional<Integer> optionalStatusCode = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.UNBIND, serviceInstance);
         if (optionalStatusCode.isPresent()) {
             return emptyBodyResponse(optionalStatusCode.get());
         }
@@ -281,14 +284,24 @@ public class ServiceInstancesResource {
 
     private Response unbindAsync(UUID bindingId, ServiceInstance serviceInstance) {
         AsyncOperation asyncOperation = new AsyncOperation(() -> {
-            if (behaviorEngine.shouldUnbindFail(serviceInstance).isPresent()) {
+            if (behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.UNBIND, serviceInstance).isPresent()) {
                 return new AsyncOperationState(AsyncOperationState.State.FAILED);
             }
             serviceInstance.unbind(bindingId);
             return new AsyncOperationState(AsyncOperationState.State.SUCCEEDED);
-        }, behaviorEngine.getTimeout());
+        }, behaviorEngine.getDuration());
         asyncOperationManager.addOperation(bindingId, asyncOperation);
         return emptyBodyResponse(Status.ACCEPTED);
+    }
+
+    private void sleepIfWanted() {
+        try {
+            if (behaviorEngine.getDuration() > 0) {
+                Thread.sleep(behaviorEngine.getDuration());
+            }
+        } catch (InterruptedException e) {
+            throw new InterruptedOperationException(e);
+        }
     }
 
     private Response emptyBodyResponse(Status httpStatus) {

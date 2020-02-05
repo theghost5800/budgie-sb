@@ -28,152 +28,174 @@ public class BehaviorEngineTest {
     private static final ApplicationConfiguration APP_CONFIG = mock(ApplicationConfiguration.class);
     private BehaviorEngine behaviorEngine;
 
-    @BeforeAll public static void init() {
+    @BeforeAll
+    public static void init() {
         when(APP_CONFIG.getCatalog()).thenReturn(CATALOG);
     }
 
-    @BeforeEach public void setUp() {
+    @BeforeEach
+    public void setUp() {
         behaviorEngine = new BehaviorEngine(APP_CONFIG);
     }
 
-    @Test public void testShouldCreateFailWithPlanName() {
+    @Test
+    public void testShouldCreateFailWithPlanName() {
         BehaviorConfiguration behaviorConfig = new BehaviorConfiguration();
-        behaviorConfig.setFailCreate(Arrays.asList(getFailConfigForPlanName(400)));
+        behaviorConfig.setFailConfigurations(Arrays.asList(getFailConfigForPlanName(FailConfiguration.OperationType.CREATE, 400)));
         behaviorEngine.setConfiguration(behaviorConfig);
-        Optional<Integer> optionalStatus = behaviorEngine.shouldCreateFail(INSTANCE);
+        Optional<Integer> optionalStatus = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.CREATE, INSTANCE);
         assertTrue(optionalStatus.isPresent());
         assertEquals(new Integer(400), optionalStatus.get());
     }
 
-    @Test public void testShouldUpdateFailWithPlanId() {
+    @Test
+    public void testShouldUpdateFailWithPlanId() {
         BehaviorConfiguration behaviorConfig = new BehaviorConfiguration();
-        behaviorConfig.setFailUpdate(Arrays.asList(getFailConfigForPlanId(404)));
+        behaviorConfig.setFailConfigurations(Arrays.asList(getFailConfigForPlanId(FailConfiguration.OperationType.UPDATE, 404)));
         behaviorEngine.setConfiguration(behaviorConfig);
-        Optional<Integer> optionalStatus = behaviorEngine.shouldUpdateFail(INSTANCE);
+        Optional<Integer> optionalStatus = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.UPDATE, INSTANCE);
         assertTrue(optionalStatus.isPresent());
         assertEquals(new Integer(404), optionalStatus.get());
     }
 
-    @Test public void testShouldDeleteFailWithServiceId() {
+    @Test
+    public void testShouldDeleteFailWithServiceId() {
         BehaviorConfiguration behaviorConfig = new BehaviorConfiguration();
-        behaviorConfig.setFailDelete(Arrays.asList(getFailConfigForServiceId(410)));
+        behaviorConfig.setFailConfigurations(Arrays.asList(getFailConfigForServiceId(FailConfiguration.OperationType.DELETE, 410)));
         behaviorEngine.setConfiguration(behaviorConfig);
-        Optional<Integer> optionalStatus = behaviorEngine.shouldDeleteFail(INSTANCE);
+        Optional<Integer> optionalStatus = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.DELETE, INSTANCE);
         assertTrue(optionalStatus.isPresent());
         assertEquals(new Integer(410), optionalStatus.get());
     }
 
-    @Test public void testShouldBindFailWithServiceName() {
+    @Test
+    public void testShouldBindFailWithServiceName() {
         BehaviorConfiguration behaviorConfig = new BehaviorConfiguration();
-        behaviorConfig.setFailBind(Arrays.asList(getFailConfigForServiceName(400)));
+        behaviorConfig.setFailConfigurations(Arrays.asList(getFailConfigForServiceName(FailConfiguration.OperationType.BIND, 400)));
         behaviorEngine.setConfiguration(behaviorConfig);
-        Optional<Integer> optionalStatus = behaviorEngine.shouldBindFail(INSTANCE);
+        Optional<Integer> optionalStatus = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.BIND, INSTANCE);
         assertTrue(optionalStatus.isPresent());
         assertEquals(new Integer(400), optionalStatus.get());
     }
 
-    @Test public void testShouldUnbindFailWithInstanceId() {
+    @Test
+    public void testShouldUnbindFailWithInstanceId() {
         BehaviorConfiguration behaviorConfig = new BehaviorConfiguration();
-        behaviorConfig.setFailUnbind(Arrays.asList(getFailConfigForInstanceId(404)));
+        behaviorConfig.setFailConfigurations(Arrays.asList(getFailConfigForInstanceId(FailConfiguration.OperationType.UNBIND, 404)));
         behaviorEngine.setConfiguration(behaviorConfig);
-        Optional<Integer> optionalStatus = behaviorEngine.shouldUnbindFail(INSTANCE);
+        Optional<Integer> optionalStatus = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.UNBIND, INSTANCE);
         assertTrue(optionalStatus.isPresent());
         assertEquals(new Integer(404), optionalStatus.get());
     }
 
-    @Test public void testShouldCreateFailAll() {
+    @Test
+    public void testShouldCreateFailAll() {
         BehaviorConfiguration behaviorConfig = new BehaviorConfiguration();
         FailConfiguration failConfiguration = new FailConfiguration();
         failConfiguration.setAll(true);
         failConfiguration.setStatus(400);
-        behaviorConfig.setFailCreate(Arrays.asList(failConfiguration));
+        failConfiguration.setOperationType(FailConfiguration.OperationType.CREATE);
+        behaviorConfig.setFailConfigurations(Arrays.asList(failConfiguration));
         behaviorEngine.setConfiguration(behaviorConfig);
-        Optional<Integer> optionalStatus = behaviorEngine.shouldCreateFail(INSTANCE);
+        Optional<Integer> optionalStatus = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.CREATE, INSTANCE);
         assertTrue(optionalStatus.isPresent());
         assertEquals(new Integer(400), optionalStatus.get());
     }
 
-    @Test public void testShouldCreateFailWhenNoBehaviorConfiguration() {
-        Optional<Integer> optionalStatus = behaviorEngine.shouldCreateFail(INSTANCE);
+    @Test
+    public void testShouldCreateFailWhenNoBehaviorConfiguration() {
+        Optional<Integer> optionalStatus = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.CREATE, INSTANCE);
         assertFalse(optionalStatus.isPresent());
     }
 
-    @Test public void testShouldUpdateFailWhenNoBehaviorConfiguration() {
-        Optional<Integer> optionalStatus = behaviorEngine.shouldUpdateFail(INSTANCE);
+    @Test
+    public void testShouldUpdateFailWhenNoBehaviorConfiguration() {
+        Optional<Integer> optionalStatus = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.UPDATE, INSTANCE);
         assertFalse(optionalStatus.isPresent());
     }
 
-    @Test public void testShouldDeleteFailWhenNoBehaviorConfiguration() {
-        Optional<Integer> optionalStatus = behaviorEngine.shouldDeleteFail(INSTANCE);
+    @Test
+    public void testShouldDeleteFailWhenNoBehaviorConfiguration() {
+        Optional<Integer> optionalStatus = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.DELETE, INSTANCE);
         assertFalse(optionalStatus.isPresent());
     }
 
-    @Test public void testShouldBindFailWhenNoBehaviorConfiguration() {
-        Optional<Integer> optionalStatus = behaviorEngine.shouldBindFail(INSTANCE);
+    @Test
+    public void testShouldBindFailWhenNoBehaviorConfiguration() {
+        Optional<Integer> optionalStatus = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.BIND, INSTANCE);
         assertFalse(optionalStatus.isPresent());
     }
 
     @Test public void testShouldUnbindFailWhenNoBehaviorConfiguration() {
-        Optional<Integer> optionalStatus = behaviorEngine.shouldUnbindFail(INSTANCE);
+        Optional<Integer> optionalStatus = behaviorEngine.shouldOperationFail(FailConfiguration.OperationType.UNBIND, INSTANCE);
         assertFalse(optionalStatus.isPresent());
     }
 
-    @Test public void testGetTimeoutWhenAsync() {
+    @Test
+    public void testGetTimeoutWhenAsync() {
         BehaviorConfiguration behaviorConfig = new BehaviorConfiguration();
-        behaviorConfig.setAsync(200);
+        behaviorConfig.setAsyncDuration(200);
         behaviorEngine.setConfiguration(behaviorConfig);
-        assertEquals(new Integer(200), behaviorEngine.getTimeout());
+        assertEquals(new Integer(200), behaviorEngine.getDuration());
         assertTrue(behaviorEngine.isAsync());
     }
 
-    @Test public void testGetTimeoutWhenSync() {
+    @Test
+    public void testGetTimeoutWhenSync() {
         BehaviorConfiguration behaviorConfig = new BehaviorConfiguration();
-        behaviorConfig.setSync(300);
+        behaviorConfig.setSyncDuration(300);
         behaviorEngine.setConfiguration(behaviorConfig);
-        assertEquals(new Integer(300), behaviorEngine.getTimeout());
+        assertEquals(new Integer(300), behaviorEngine.getDuration());
         assertFalse(behaviorEngine.isAsync());
     }
 
-    @Test public void testGetTimeoutWhenNoBehaviorConfiguration() {
-        assertEquals(new Integer(0), behaviorEngine.getTimeout());
+    @Test
+    public void testGetTimeoutWhenNoBehaviorConfiguration() {
+        assertEquals(new Integer(0), behaviorEngine.getDuration());
     }
 
-    @Test public void testBeSynchronousWhenNoBehaviorConfiguration() {
+    @Test
+    public void testBeSynchronousWhenNoBehaviorConfiguration() {
         assertFalse(behaviorEngine.isAsync());
     }
 
-    private FailConfiguration getFailConfigForPlanName(int status) {
+    private FailConfiguration getFailConfigForPlanName(FailConfiguration.OperationType operationType, int status) {
         FailConfiguration failConfig = new FailConfiguration();
         failConfig.setPlanNames(Arrays.asList(PLAN.getName()));
         failConfig.setStatus(status);
+        failConfig.setOperationType(operationType);
         return failConfig;
     }
 
-    private FailConfiguration getFailConfigForPlanId(int status) {
+    private FailConfiguration getFailConfigForPlanId(FailConfiguration.OperationType operationType, int status) {
         FailConfiguration failConfig = new FailConfiguration();
         failConfig.setPlanIds(Arrays.asList(PLAN.getId()));
         failConfig.setStatus(status);
+        failConfig.setOperationType(operationType);
         return failConfig;
     }
 
-    private FailConfiguration getFailConfigForServiceName(int status) {
+    private FailConfiguration getFailConfigForServiceName(FailConfiguration.OperationType operationType, int status) {
         FailConfiguration failConfig = new FailConfiguration();
         failConfig.setServiceNames(Arrays.asList(SERVICE.getName()));
         failConfig.setStatus(status);
+        failConfig.setOperationType(operationType);
         return failConfig;
     }
 
-    private FailConfiguration getFailConfigForServiceId(int status) {
+    private FailConfiguration getFailConfigForServiceId(FailConfiguration.OperationType operationType, int status) {
         FailConfiguration failConfig = new FailConfiguration();
         failConfig.setServiceIds(Arrays.asList(SERVICE.getId()));
         failConfig.setStatus(status);
+        failConfig.setOperationType(operationType);
         return failConfig;
     }
 
-    private FailConfiguration getFailConfigForInstanceId(int status) {
+    private FailConfiguration getFailConfigForInstanceId(FailConfiguration.OperationType operationType, int status) {
         FailConfiguration failConfig = new FailConfiguration();
         failConfig.setInstanceIds(Arrays.asList(INSTANCE.getId()));
         failConfig.setStatus(status);
+        failConfig.setOperationType(operationType);
         return failConfig;
     }
 

@@ -1,5 +1,7 @@
 package com.sap.broker.budgie.configuration.behavior;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -7,11 +9,13 @@ public class FailConfiguration {
 
     private Boolean all;
     private Integer status;
+    private OperationType operationType;
     private List<UUID> serviceIds;
     private List<UUID> planIds;
     private List<UUID> instanceIds;
     private List<String> serviceNames;
     private List<String> planNames;
+
 
     public Boolean getAll() {
         return all;
@@ -27,6 +31,14 @@ public class FailConfiguration {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public OperationType getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(OperationType operationType) {
+        this.operationType = operationType;
     }
 
     public List<UUID> getServiceIds() {
@@ -67,5 +79,23 @@ public class FailConfiguration {
 
     public void setPlanNames(List<String> planNames) {
         this.planNames = planNames;
+    }
+
+    public enum OperationType {
+
+        @SerializedName("create")
+        CREATE,
+
+        @SerializedName("update")
+        UPDATE,
+
+        @SerializedName("delete")
+        DELETE,
+
+        @SerializedName("bind")
+        BIND,
+
+        @SerializedName("unbind")
+        UNBIND
     }
 }

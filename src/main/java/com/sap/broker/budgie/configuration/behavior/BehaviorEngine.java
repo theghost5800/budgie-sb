@@ -7,7 +7,6 @@ import com.sap.broker.budgie.domain.ServiceInstance;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
@@ -31,45 +30,27 @@ public class BehaviorEngine {
         return configuration;
     }
 
-    public Integer getTimeout() {
+    public Integer getDuration() {
         if (isAsync()) {
-            return configuration.getAsync();
+            return configuration.getAsyncDuration();
         }
-        if (configuration != null && configuration.getSync() != null) {
-            return configuration.getSync();
+        if (configuration != null && configuration.getSyncDuration() != null) {
+            return configuration.getSyncDuration();
         }
         return 0;
     }
 
     public boolean isAsync() {
-        return configuration != null && configuration.getAsync() != null;
+        return configuration != null && configuration.getAsyncDuration() != null;
     }
 
-    public Optional<Integer> shouldCreateFail(ServiceInstance serviceInstance) {
-        return configuration == null ? Optional.empty() : shouldOperationFail(serviceInstance, configuration.getFailCreate());
-    }
-
-    public Optional<Integer> shouldDeleteFail(ServiceInstance serviceInstance) {
-        return configuration == null ? Optional.empty() : shouldOperationFail(serviceInstance, configuration.getFailDelete());
-    }
-
-    public Optional<Integer> shouldUpdateFail(ServiceInstance serviceInstance) {
-        return configuration == null ? Optional.empty() : shouldOperationFail(serviceInstance, configuration.getFailUpdate());
-    }
-
-    public Optional<Integer> shouldBindFail(ServiceInstance serviceInstance) {
-        return configuration == null ? Optional.empty() : shouldOperationFail(serviceInstance, configuration.getFailBind());
-    }
-
-    public Optional<Integer> shouldUnbindFail(ServiceInstance serviceInstance) {
-        return configuration == null ? Optional.empty() : shouldOperationFail(serviceInstance, configuration.getFailUnbind());
-    }
-
-    private Optional<Integer> shouldOperationFail(ServiceInstance serviceInstance, List<FailConfiguration> failConfigurations) {
-        if (failConfigurations == null) {
+    public Optional<Integer> shouldOperationFail(FailConfiguration.OperationType operationType, ServiceInstance serviceInstance) {
+        if (configuration == null || configuration.getFailConfigurations() == null) {
             return Optional.empty();
         }
-        return failConfigurations.stream().filter(failConfig -> all().or(byInstanceId()
+        return configuration.getFailConfigurations().stream()
+            .filter(failConfig -> operationType.equals(failConfig.getOperationType()))
+            .filter(failConfig -> all().or(byInstanceId()
             .and(byPlanId())
             .and(byServiceId())
             .and(byPlanName())

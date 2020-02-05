@@ -140,6 +140,7 @@
             <version>2.6</version>
         </dependency>
 
+        <!-- may be removed later; used only for debug during development-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

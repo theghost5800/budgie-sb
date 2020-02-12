@@ -9,7 +9,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/configuration")
+@Path("/{configId}/v2/configuration")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ConfigurationResource {
@@ -24,22 +24,28 @@ public class ConfigurationResource {
     }
 
     @GET
-    public Response getConfiguration() {
-        return Response.ok(behaviorEngine.getConfiguration()).build();
+    public Response getConfiguration(@PathParam("configId") String configId) {
+        BehaviorConfiguration configuration = behaviorEngine.getConfiguration(configId);
+        if (configuration == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(configuration).build();
     }
 
     @PUT
-    public Response configure(BehaviorConfiguration configuration) {
+    public Response configure(@PathParam("configId") String configId, BehaviorConfiguration configuration) {
         if (!behaviorConfigurationValidator.validate(configuration)) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        behaviorEngine.setConfiguration(configuration);
+        behaviorEngine.addConfiguration(configId, configuration);
         return Response.ok(configuration).build();
     }
 
     @DELETE
-    public Response reset() {
-        behaviorEngine.setConfiguration(null);
+    public Response reset(@PathParam("configId") String configId) {
+        if (behaviorEngine.removeConfiguration(configId) == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
         return Response.ok().build();
     }
 }
